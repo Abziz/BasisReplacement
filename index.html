@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <!-- scripts -->
+    <script src="Scripts/jquery-3.1.1.js"></script>
+    <script src="Scripts/tether/tether.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <script src="Scripts/cytoscape.js"></script>
+    <script src="Scripts/cytoscape-dagre.js"></script>
+    
+    <script src="Scripts/app.js"></script>
+    <!-- styles -->
+    <link rel="stylesheet" href="Content/tether/tether.css" />
+    <link rel="stylesheet" href="Content/bootstrap.css"/>
+    <link rel="stylesheet" href="Content/font-awesome-4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" href="Content/buttons.css" />
+    
+    <link rel="stylesheet" href="Content/app.css" />
+</head>
+<body>
+    <div id="settings">
+        <div class="row">
+            <div class="col-md-4 col-centered ">
+                <h4> Settings:</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-secondary" type="button">Dimension</button>
+                            </span>
+                            <input type="number" id="dim" min="2" max="10" class="form-control" placeholder="לכל היותר 10">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-centered text-center">
+                <h4> Basis A</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="matrix_a_input" class="matrix">
+                            
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-centered text-center">
+                <h4> Basis B</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="matrix_b_input" class="matrix" >
+
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div id="buttons">
+        <button id="btn-settings" class="button button-inverse button-circle button-large button-longshadow" toggled="true">
+            <i class="fa fa-gear"></i>
+        </button>
+        <button id="reset-zoom"  class="button button-inverse button-circle button-large button-longshadow">
+            <i class="fa fa-home"></i>
+        </button>    
+    </div>
+    <div id="cy">
+    </div>
+</body>
+
+</html>
