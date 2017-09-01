@@ -1,3 +1,0 @@
-﻿var Matrix = new function () {
-
-}
