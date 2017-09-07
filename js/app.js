@@ -7,14 +7,40 @@ var initPage = function () {
     cy = cytoscape({
         container: document.getElementById('cy'),
         userZoomingEnabled: false,
-        zoomingEnabled:false,
+        zoomingEnabled: false,
         userPanningEnabled: false,
-        
+
         style: [
             {
                 selector: 'node',
                 style: {
                     'label': 'data(label)'
+                }
+            },
+            {
+                selector: 'edge.directed',
+                style: {
+                    'line-color': 'data(color)',
+                    'curve-style': 'bezier',
+                    'target-arrow-color': 'data(color)',
+                    'target-arrow-shape': 'triangle'
+                }
+            },
+            {
+                selector: 'edge.undirected',
+                style: {
+                    'line-color': 'data(color)',
+                    'curve-style': 'bezier',
+                    'source-arrow-shape': 'triangle',
+                    'source-arrow-color': 'data(color)',
+                    'target-arrow-color': 'data(color)',
+                    'target-arrow-shape': 'triangle'
+                }
+            },
+            {
+                selector: 'edge.hidden',
+                style: {
+                    'visibility': 'hidden'
                 }
             }
         ]
@@ -28,7 +54,7 @@ var initPage = function () {
     $("#load-graph-btn").click(function (e) {
         cy.$("*").remove();
         GenerateGraphElements();
-        cy.layout({ name: 'grid', position: bipartite, rows: settings.dim,cols:2, fit: true }).run();        
+        cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { cy.center(); } }).run();
     });
     $("#btn-settings").click(function () {
         var setting = $("#settings");
@@ -58,7 +84,27 @@ var initPage = function () {
     });
     $(".matrix input").bind('paste', null, smartpaste);
 
-    cy.on('tap', 'edge', function (event) {
+    $("#select-edges-to-show input").change(function (e) {
+        var option = parseInt($(this).data('edges-to-show'));
+        switch (option) {
+            case 2:
+                cy.$('edge[group!="both"]').addClass("hidden");
+                cy.$('edge[group="both"]').removeClass('hidden');
+                break;
+            case -1:
+                cy.$('edge[group!="from a"]').addClass("hidden");
+                cy.$('edge[group="from a"]').removeClass('hidden');
+                break;
+            case 1:
+                cy.$('edge[group!="from b"]').addClass("hidden");
+                cy.$('edge[group="from b"]').removeClass('hidden');
+                break;
+            default:
+                break;
+        }
+    });
+
+    cy.on('tap', 'edge.undirected', function (event) {
         var edge = event.target;
         alert('swap ' + edge.source().id() + ' with ' + edge.target().id());
     });
@@ -75,7 +121,42 @@ var initPage = function () {
         cy.add({ data: { id: 'basis_b', label: 'B' }, selectable: false, grabbable: false });
         cy.add(GenerateNodesForMatrix(settings.A, 'a', 'basis_a'));
         cy.add(GenerateNodesForMatrix(settings.B, 'b', 'basis_b'));
-        //cy.add(GenerateEdgesForMatrices(settings.A, settings.B, 'a', 'b'));
+        cy.add(GenerateEdgesForMatrices(settings.A, settings.B));
+    }
+    function GenerateEdgesForMatrices(mat_a, mat_b, pref_a = 'a', pref_b = 'b') {
+        var edges = [];
+        for (var i = 0; i < mat_a.length; i++) {
+            for (var j = 0; j < mat_b.length; j++) {
+                switch (SwapRowsAndCheckIfBasis(mat_a, mat_b, i, j)) {
+                    case 2:
+                        edges.push(createEdge('e'+i+j, 'a_' + i, 'b_' + j, '#000','both', 'undirected'));
+                        break;
+                    case -1:
+                        edges.push(createEdge('e-' + 'a_' + i + '-' + 'b_' + j, 'a_' + i, 'b_' + j, '#EDA1ED','from a','directed hidden'));
+                        break;
+                    case 1:
+                        edges.push(createEdge('e-' + 'b_' + j + '-' + 'a_' + i, 'b_' + j, 'a_' + i, '#86B342','from b', 'directed hidden'));
+                        break;
+                    default:
+                        continue;
+                }
+            }
+        }
+        return edges;
+    }
+
+    function createEdge(id, source, target, color,group, type) {
+        return {
+            group: 'edges',
+            data: {
+                id: id,
+                source: source,
+                target: target,
+                color: color,
+                group: group
+            },
+            classes: type
+        }
     }
 
     function GenerateNodesForMatrix(matrix, prefix, parent = undefined) {
@@ -86,8 +167,9 @@ var initPage = function () {
                 data: {
                     id: prefix + '_' + i,
                     parent: parent,
-                    label: prefix + (index+1),
-                    extra: { row: i, pos: { row: index + 1, col: prefix == 'a' ? 1 : 2 } }
+                    label: prefix + i,
+                    extra: { row: i, pos: { row: index + 1, col: prefix == 'a' ? 1 : 2 } },
+                    group: prefix
                 },
                 grabbable: false
             }
@@ -96,6 +178,27 @@ var initPage = function () {
         return nodes;
     }
 
+    function SwapRowsAndCheckIfBasis(lhs, rhs, source, target) {
+        var temp;
+        temp = lhs[source];
+        lhs[source] = rhs[target];
+        rhs[target] = temp;
+        lhs_is_basis = math.det(lhs) != 0;
+        rhs_is_basis = math.det(rhs) != 0;
+        temp = lhs[source];
+        lhs[source] = rhs[target];
+        rhs[target] = temp;
+        if (lhs_is_basis && rhs_is_basis != 0) {
+            return 2;//both stay basis
+        }
+        if (lhs_is_basis && !rhs_is_basis) {
+            return -1;//lhs stays basis
+        }
+        if (!lhs_is_basis && rhs_is_basis) {
+            return 1;//rhs stays basis
+        }
+        return 0;
+    }
     function csvToTable(e, elem) {
     }
 

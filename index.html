@@ -302,16 +302,27 @@
             </div>
             <div class="col-md-3">
                 <h4> Settings:</h4>
-                <div class="row">
-                    <div class="col-md-12" dir="ltr">
-                        <input type="text" id="dimmension" />
-                    </div>
+                <div class="col-md-12" dir="ltr">
+                    <input type="text" id="dimmension" />
                 </div>
-                <div class="row">
-                    <a href="#" id="load-graph-btn" class="button button-rounded">
+                <br/>
+                <div>
+                    <button id="load-graph-btn" class="btn btn-primary">
                         <i class="fa fa-fw fa-refresh"></i>
                         Load Graph
-                    </a>
+                    </button>
+                </div>
+                <br />
+                <div class="btn-group" id="select-edges-to-show" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="radio" name="options" data-edges-to-show="2" checked> Both
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" name="options" data-edges-to-show="-1" > A
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" name="options" data-edges-to-show="1"> B
+                    </label>
                 </div>
             </div>
             <div class="col-md-3">
