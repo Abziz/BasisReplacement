@@ -1,6 +1,7 @@
 ﻿
 var cy;
 var nodes;
+var selected;
 var settings = { dim: 10 };
 var initPage = function () {
 
@@ -45,6 +46,7 @@ var initPage = function () {
             }
         ]
     });
+
     $("#random-basis-A-btn").click(function (e) {
         matrixToInput(generateRandomBasis(), $("#basisA"));
     });
@@ -82,6 +84,7 @@ var initPage = function () {
     $("#reset-zoom").click(function () {
         cy.center();
     });
+
     $(".matrix input").bind('paste', null, smartpaste);
 
     $("#select-edges-to-show input").change(function (e) {
@@ -106,13 +109,36 @@ var initPage = function () {
 
     cy.on('tap', 'edge.undirected', function (event) {
         var edge = event.target;
-        alert('swap ' + edge.source().id() + ' with ' + edge.target().id());
+        selected = event.target;
+        var source_org_position = edge.source().data().extra.pos;
+        var target_org_position = edge.target().data().extra.pos;
+        var source_org_parent = edge.source().parent().id();
+        var target_org_parent = edge.target().parent().id();
+        edge.source().data().extra.pos = target_org_position;
+        edge.target().data().extra.pos = source_org_position;
+        edge.source().move({ parent: target_org_parent });
+        edge.target().move({ parent: source_org_parent });
+        if (source_org_parent == 'basis_a') {
+            swapRows(settings.A, settings.B, source_org_position.row, target_org_position.row);
+        } else {
+            swapRows(settings.B, settings.A, source_org_position.row, target_org_position.row);
+        }
+        cy.$("edge").remove();
+        cy.add(GenerateEdgesForMatrices(settings.A, settings.B));
+        cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { cy.center(); } }).run();
     });
+
+    function swapRows(source, dest, s_pos, d_pos) {
+        var temp = source[s_pos];
+        source[s_pos] = dest[d_pos]
+        dest[d_pos] = temp;
+    }
 
     function bipartite(node) {
         extra = node.data('extra');
         return extra.pos;
     }
+
     function GenerateGraphElements() {
         settings.A = InputTomatrix($("#basisA"));
         settings.B = InputTomatrix($("#basisB"));
@@ -125,17 +151,19 @@ var initPage = function () {
     }
     function GenerateEdgesForMatrices(mat_a, mat_b, pref_a = 'a', pref_b = 'b') {
         var edges = [];
+        var basis_a_nodes = cy.$("#basis_a > node");
+        var basis_b_nodes = cy.$("#basis_b > node");
         for (var i = 0; i < mat_a.length; i++) {
             for (var j = 0; j < mat_b.length; j++) {
                 switch (SwapRowsAndCheckIfBasis(mat_a, mat_b, i, j)) {
                     case 2:
-                        edges.push(createEdge('e'+i+j, 'a_' + i, 'b_' + j, '#000','both', 'undirected'));
+                        edges.push(createEdge('e'+i+j, basis_a_nodes[i].id(), basis_b_nodes[j].id(), '#000','both', 'undirected'));
                         break;
                     case -1:
-                        edges.push(createEdge('e-' + 'a_' + i + '-' + 'b_' + j, 'a_' + i, 'b_' + j, '#EDA1ED','from a','directed hidden'));
+                        edges.push(createEdge('e-' + basis_a_nodes[i].id() + '-' + basis_b_nodes[j].id(), basis_a_nodes[i].id(), basis_b_nodes[j].id(), '#EDA1ED','from a','directed hidden'));
                         break;
                     case 1:
-                        edges.push(createEdge('e-' + 'b_' + j + '-' + 'a_' + i, 'b_' + j, 'a_' + i, '#86B342','from b', 'directed hidden'));
+                        edges.push(createEdge('e-' + basis_b_nodes[j].id() + '-' + basis_a_nodes[i].id(), basis_b_nodes[j].id(), basis_a_nodes[i].id(), '#86B342','from b', 'directed hidden'));
                         break;
                     default:
                         continue;
@@ -168,7 +196,7 @@ var initPage = function () {
                     id: prefix + '_' + i,
                     parent: parent,
                     label: prefix + i,
-                    extra: { row: i, pos: { row: index + 1, col: prefix == 'a' ? 1 : 2 } },
+                    extra: { pos: { row: index, col: prefix == 'a' ? 1 : 2 } },
                     group: prefix
                 },
                 grabbable: false
