@@ -2,13 +2,14 @@
 var cy;
 var nodes;
 var selected;
+var gen = 0;
 var settings = { dim: 10 };
 var initPage = function () {
 
     cy = cytoscape({
         container: document.getElementById('cy'),
-        userZoomingEnabled: false,
-        zoomingEnabled: false,
+        userZoomingEnabled: true,
+        zoomingEnabled: true,
         userPanningEnabled: false,
 
         style: [
@@ -109,7 +110,6 @@ var initPage = function () {
 
     cy.on('tap', 'edge.undirected', function (event) {
         var edge = event.target;
-        selected = event.target;
         var source_org_position = edge.source().data().extra.pos;
         var target_org_position = edge.target().data().extra.pos;
         var source_org_parent = edge.source().parent().id();
@@ -120,12 +120,14 @@ var initPage = function () {
         edge.target().move({ parent: source_org_parent });
         if (source_org_parent == 'basis_a') {
             swapRows(settings.A, settings.B, source_org_position.row, target_org_position.row);
-        } else {
+        }
+        else {
             swapRows(settings.B, settings.A, source_org_position.row, target_org_position.row);
         }
         cy.$("edge").remove();
         cy.add(GenerateEdgesForMatrices(settings.A, settings.B));
         cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { cy.center(); } }).run();
+        logMatrices();
     });
 
     function swapRows(source, dest, s_pos, d_pos) {
@@ -149,6 +151,7 @@ var initPage = function () {
         cy.add(GenerateNodesForMatrix(settings.B, 'b', 'basis_b'));
         cy.add(GenerateEdgesForMatrices(settings.A, settings.B));
     }
+
     function GenerateEdgesForMatrices(mat_a, mat_b, pref_a = 'a', pref_b = 'b') {
         var edges = [];
         var basis_a_nodes = cy.$("#basis_a > node");
@@ -157,7 +160,9 @@ var initPage = function () {
             for (var j = 0; j < mat_b.length; j++) {
                 switch (SwapRowsAndCheckIfBasis(mat_a, mat_b, i, j)) {
                     case 2:
-                        edges.push(createEdge('e'+i+j, basis_a_nodes[i].id(), basis_b_nodes[j].id(), '#000','both', 'undirected'));
+                        var edge = createEdge('e' + i + j + '-' + gen, basis_a_nodes[i].id(), basis_b_nodes[j].id(), '#000', 'both', 'undirected');
+                        console.log(edge.data.id);
+                        edges.push(edge);
                         break;
                     case -1:
                         edges.push(createEdge('e-' + basis_a_nodes[i].id() + '-' + basis_b_nodes[j].id(), basis_a_nodes[i].id(), basis_b_nodes[j].id(), '#EDA1ED','from a','directed hidden'));
@@ -170,6 +175,7 @@ var initPage = function () {
                 }
             }
         }
+        gen++;
         return edges;
     }
 
@@ -216,18 +222,27 @@ var initPage = function () {
         temp = lhs[source];
         lhs[source] = rhs[target];
         rhs[target] = temp;
-        if (lhs_is_basis && rhs_is_basis != 0) {
+        if (lhs_is_basis && rhs_is_basis) {
             return 2;//both stay basis
         }
-        if (lhs_is_basis && !rhs_is_basis) {
+        if (lhs_is_basis) {
             return -1;//lhs stays basis
         }
-        if (!lhs_is_basis && rhs_is_basis) {
+        if (rhs_is_basis) {
             return 1;//rhs stays basis
         }
         return 0;
     }
+
     function csvToTable(e, elem) {
+    }
+
+    function transpose( mat ) {
+        return mat[0].map(function (col, i) {
+            return mat.map(function (row) {
+                return row[i]
+            })
+        });
     }
 
     function generateRandomBasis() {
@@ -294,6 +309,23 @@ var initPage = function () {
                 }
             }
         });
+    }
+
+    function logMatrices() {
+        var s;
+        console.log("    A:        B:    ");
+        s = "";
+        for (var i = 0; i < settings.dim; i++) {
+            for (var j = 0; j < settings.dim; j++) {
+                s = s + settings.A[i][j];
+            }
+            s = s + '  ';
+            for (var j = 0; j < settings.dim; j++) {
+                s = s + settings.B[i][j];
+            }
+            s = s + '\n';
+        }
+        console.log(s);
     }
 
     function smartpaste(e) {
