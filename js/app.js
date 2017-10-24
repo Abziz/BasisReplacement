@@ -51,6 +51,7 @@ var initPage = function () {
     $("#random-basis-A-btn").click(function (e) {
         matrixToInput(generateRandomBasis(), $("#basisA"));
     });
+
     $("#random-basis-B-btn").click(function (e) {
         matrixToInput(generateRandomBasis(), $("#basisB"));
     });
