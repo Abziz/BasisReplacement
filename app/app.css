@@ -1,0 +1,51 @@
+﻿html,body,#wrapper,#page-content-wrapper{
+    height:100%;
+}
+
+#toolbar{
+    z-index:100000;
+    display:flex;
+    flex-direction:column;
+    position: absolute;
+    margin:5px;
+}
+#cy{
+    height:100%;
+    width:100%;
+}
+
+.btn-group.special {
+    display: flex;
+}
+
+.special .btn {
+    flex: 1
+}
+
+.matrix {
+    transition: all 0.5s ease;
+    align-self: center;
+    justify-content: center;
+    border-collapse: collapse;
+    margin: auto;
+}
+.matrix td{
+    line-height:0px;   
+}
+.matrix-wrapper .card-body{
+    padding:0px !important;
+    align-items:center;
+}
+
+.matrix-wrapper card-text{
+    align-content:center;
+}
+
+.matrix-card .card-body{
+    padding:0px 0px;
+}
+
+.matrix td input{
+    width:25px;
+    height:10%;
+}

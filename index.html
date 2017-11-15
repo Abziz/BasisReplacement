@@ -1,352 +1,171 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title></title>
     <meta charset="utf-8" />
-    <!-- scripts -->
-    <script src="js/core/jquery-3.1.1.js"></script>
-    <script src="js/core/tether/tether.js"></script>
-    <script src="js/core/bootstrap.js"></script>
-    <script src="js/cytoscape/cytoscape.js"></script>
-    <script src="js/cytoscape/cytoscape-cose-bilkent.js"></script>
-    <script src="js/ion.slider/ion.rangeSlider.js"></script>
-    <script src="js/math/math.js"></script>
-
-
-    <script src="js/app.js"></script>
-    <!-- styles -->
-    <link rel="stylesheet" href="css/tether/tether.css" />
-    <link rel="stylesheet" href="css/bootstrap.css" />
-    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.css" />
-    <link rel="stylesheet" href="css/buttons.css" />
-    <link rel="stylesheet" href="css/ion.slider/ion.rangeSlider.css" />
-    <link rel="stylesheet" href="css/ion.slider/ion.rangeSlider.skinNice.css" />
-    <link rel="stylesheet" href="css/app.css" />
+    <title> Base replacements</title>
+    <!-- bootstrap css-->
+    <link rel="stylesheet" href="Content/bootstrap.min.css">
+    <!-- font awesome css-->
+    <link rel="stylesheet" href="Content/font-awesome.min.css" />
+    <!-- jquery and bootstrap js-->
+    <script type="text/javascript" src="Scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/umd/popper.min.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+    <!-- cytoscape -->
+    <script type="text/javascript" src="Scripts/cytoscape.min.js"></script>
+    <!-- math -->
+    <script type="text/javascript" src="Scripts/math/math.min.js"></script>
+    <!-- sidebar css-->
+    <link rel="stylesheet" href="Content/sidebar.css">
+    <!-- app -->
+    <link rel="stylesheet" href="app/app.css" />
+    <script type="text/javascript" src="app/app.js"></script>
 </head>
+
 <body>
-    <div id="settings">
-        <div class="row no-margin">
-            <div class="col-md-3 text-center">
-                <h4> Basis A</h4>
+    <div id="wrapper" class="toggled">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" >
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-12 ">
-                        <table id="basisA" class="matrix col-centered">
-                            <tbody>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-12" dir="ltr">
-                        <a href="#" id="random-basis-A-btn" class="button button-rounded">
-                            <i class="fa fa-fw fa-random"></i>
-                            Random
-                        </a>
+                    <div class="col-12 text-center">
+                        <div class="form-group">
+                            <div class="btn-group special" data-toggle="buttons">
+                                <label class="btn btn-outline-dark active">
+                                    <input type="radio" name="input-methods" data-name="Transition Matrix" id="i_m_1" checked> <i class="fa fa-th"></i>
+                                </label>
+                                <label class="btn btn-outline-dark">
+                                    <input type="radio" name="input-methods" data-name="Two Matrices" id="i_m_2"> <i class="fa fa-th"></i> <i class="fa fa-th"></i>
+                                </label>
+                            </div>
+                            <p id="method-title"></p>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-dark">
+                                        Dimmension
+                                    </button>
+                                </span>
+                                <select id="select-dim" class="form-control">
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10" selected>10</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="transition-matrix-group">
+                            <div class="card text-white bg-dark mb-3 matrix-card">
+                                <div class="btn-group special" id="transition-matrix-btn-group">
+                                    <button class="btn btn-dark small matrix-btn" style="flex:3"
+                                            data-toggle="tooltip"
+                                            title="Show/Hide matrix">Transition Matrix</button>
+                                    <button class="btn btn-dark calc-btn" style="display:none"
+                                            data-toggle="tooltip"
+                                            title="Calculate transition matrix from the matrices below">
+                                        <i class="fa fa-calculator"></i>
+                                    </button>
+                                    <button class="btn btn-dark random-btn t-mat-only"
+                                            data-toggle="tooltip"
+                                            title="Generate a random transition matrix">
+                                        <i class="fa fa-cube"></i></button>
+                                    <button class="btn btn-dark clear-btn t-mat-only"
+                                            data-toggle="tooltip"
+                                            title="Clear matrix">
+                                        <i class="fa fa-eraser"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <table id="matrix-table-transition" class="matrix">
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="matrix-a-group"  style="display:none">
+                            <div class="card text-white bg-dark mb-3 matrix-card">
+                                <div class="btn-group special" id="matrix-a-btn-group">
+                                    <button class="btn btn-dark small matrix-btn" style="flex:3"
+                                            data-toggle="tooltip"
+                                            title="Show/Hide matrix">Basis #1</button>
+                                    <button class="btn btn-dark random-basis-btn"
+                                            data-toggle="tooltip"
+                                            title="Generate a random basis">
+                                        <i class="fa fa-cube"></i>
+                                    </button>
+                                    <button class="btn btn-dark clear-btn"
+                                            data-toggle="tooltip"
+                                            title="Clear matrix">
+                                        <i class="fa fa-eraser"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body" style="display:none">
+                                    <table id="matrix-table-a" class="matrix">
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="matrix-b-group" style="display:none">
+                            <div class="card text-white bg-dark mb-3 matrix-card">
+                                <div class="btn-group special" id="matrix-b-btn-group" width="100%">
+                                    <button class="btn btn-dark matrix-btn" style="flex:3" 
+                                            data-toggle="tooltip"
+                                            title="Show/Hide matrix">Basis #2</button>
+                                    <button class="btn btn-dark random-basis-btn" 
+                                            data-toggle="tooltip"
+                                            title="Generate a random basis">
+                                        <i class="fa fa-cube"></i>
+                                    </button>
+                                    <button class="btn btn-dark clear-btn" 
+                                            data-toggle="tooltip"
+                                            title="Clear matrix">
+                                        <i class="fa fa-eraser"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body" style="display:none">
+                                    <table id="matrix-table-b" class="matrix"  >
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+ 
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 text-center">
-                <h4> Basis B</h4>
-                <div class="row">
-                    <div class="col-md-12 ">
-                        <table id="basisB" class="matrix col-centered">
-                            <tbody>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                    <td><input type="text" value="" class="mat-elem" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-12" dir="ltr">
-                        <a href="#" id="random-basis-B-btn" class="button button-rounded">
-                            <i class="fa fa-fw fa-random"></i>
-                            Random
-                        </a>
-                    </div>
-                </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <div id="toolbar">
+                <a href="#" class="btn btn-light" id="menu-btn"><i class="fa fa-bars"></i></a>
+                <a href="#" class="btn btn-light" id="home-btn"><i class="fa fa-home"></i></a>
+                <a href="#" class="btn btn-light" id="load-btn"><i class="fa fa-share-alt"></i></a>
             </div>
-            <div class="col-md-3">
-                <h4> Settings:</h4>
-                <div class="col-md-12" dir="ltr">
-                    <input type="text" id="dimmension" />
-                </div>
-                <br/>
-                <div>
-                    <button id="load-graph-btn" class="btn btn-primary">
-                        <i class="fa fa-fw fa-refresh"></i>
-                        Load Graph
-                    </button>
-                </div>
-                <br />
-                <div class="btn-group" id="select-edges-to-show" data-toggle="buttons">
-                    <label class="btn btn-primary active">
-                        <input type="radio" name="options" data-edges-to-show="2" checked> Both
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="radio" name="options" data-edges-to-show="-1" > A
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="radio" name="options" data-edges-to-show="1"> B
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-3">
+            <div id="cy">
 
             </div>
 
         </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-    <div id="buttons">
-        <button id="btn-settings" class="button button-inverse button-circle button-large button-longshadow" toggled="true">
-            <i class="fa fa-gear"></i>
-        </button>
-        <button id="reset-zoom" class="button button-inverse button-circle button-large button-longshadow">
-            <i class="fa fa-home"></i>
-        </button>
-    </div>
-    <div id="cy">
-    </div>
+    <!-- /#wrapper -->
     <script type="text/javascript">
-        var home;
         $(function () {
-            home = initPage();
+            initPage();
         });
     </script>
 </body>
-
 </html>
