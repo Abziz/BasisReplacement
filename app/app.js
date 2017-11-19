@@ -2,7 +2,18 @@
 var nodes;
 var selected;
 var gen = 0;
-var settings = { dim: 10 };
+var settings = {
+    dim: 10,
+    base: 2,
+    transition: math.zeros(10, 10)._data,
+    A: math.zeros(10, 10)._data,
+    B: math.zeros(10,10)._data
+};
+
+
+
+
+
 
 
 function initPage() {
@@ -16,7 +27,7 @@ function initPage() {
         zoomingEnabled: true,
         userPanningEnabled: false,
         elements: [ // list of graph elements to start with
-            
+
         ],
         style: [
             {
@@ -128,12 +139,12 @@ function initButtons() {
         matrixToInput(generateRandomBinaryMatrix(), $(this).parent().next().find("table"));
     });
     */
-    
-    $(".random-basis-btn ,.random-btn").click(function (e) { 
+
+    $(".random-basis-btn ,.random-btn").click(function (e) {
         if (!$(this).parent().next().is(":visible")) {
             $(this).parent().next().slideToggle(500);
         }
-        matrixToInput(generateRandomBasis(), $(this).parent().next().find("table"));
+        matrixToInput(math.randBasisGF(settings.dim, 2), $(this).parent().next().find("table"));
     });
 
     $(".clear-btn").click(function (e) {
@@ -149,7 +160,9 @@ function initButtons() {
     $(".calc-btn").click(function (e) {
         settings.A = inputToMatrix($("#matrix-table-a"));
         settings.B = inputToMatrix($("#matrix-table-b"));
-        settings.transition = calculateTransitionMatrix(settings.A,settings.B);
+        settings.transition = math.transitionMatrixGF(settings.A, settings.B, settings.base);
+        console.log(mat2str(settings.A));
+        console.log(mat2str(settings.B));
         matrixToInput(settings.transition, $("#matrix-table-transition"));
     });
 
@@ -177,27 +190,6 @@ function createMatrixTables() {
 
 }
 
-function generateRandomBasis() {
-    var count = 0;
-    var matrix;
-    do {
-        matrix = generateRandomBinaryMatrix();
-        count++;
-    }
-    while (math.det(matrix) == 0);
-    return matrix;
-}
-
-function generateRandomBinaryMatrix() {
-    var matrix = [];
-    for (var i = 0; i < settings.dim; i++) {
-        matrix[i] = [];
-        for (var j = 0; j < settings.dim; j++) {
-            matrix[i][j] = Math.round(Math.random());
-        }
-    }
-    return matrix;
-}
 
 function matrixToInput(matrix, elem) {
     var n = settings.dim;
@@ -235,7 +227,6 @@ function UpdateMatrixDimension(n) {
 function inputToMatrix(elem) {
     var n = settings.dim;
     var input = $("tbody input.dim-visible", elem);
-    console.log(input);
     var matrix = [];
     for (var i = 0; i < n; i++) {
         matrix[i] = [];
@@ -246,18 +237,8 @@ function inputToMatrix(elem) {
     return matrix;
 }
 
-function calculateTransitionMatrix(A, B, base = 2) {
-    return math.mod(math.multiply(galoisInverse(A), B), base)
-}
 
-function galoisInverse(A) {
-    return math.mod(math.round(math.multiply(math.det(A), math.inv(A))), 2);
-}
 function swapRows(source, dest, s_pos, d_pos) {
-    console.log(source);
-    console.log(dest);
-    console.log(s_pos);
-    console.log(d_pos);
     var temp = source[s_pos];
     source[s_pos] = dest[d_pos]
     dest[d_pos] = temp;
@@ -267,7 +248,7 @@ function swapRows(source, dest, s_pos, d_pos) {
 /* cytoscape related */
 
 function initCytoscapeEvents() {
-    cy.on('tap', 'edge.undirected', undirectedEdgeClick);
+    cy.on('tap', 'edge', undirectedEdgeClick);
 }
 
 
@@ -276,8 +257,9 @@ function generateNodesFromTransitionMatrix() {
     cy.elements().remove();
     cy.add({ data: { id: 'basis_a', label: 'A' }, selectable: false, grabbable: false });
     cy.add({ data: { id: 'basis_b', label: 'B' }, selectable: false, grabbable: false });
-    for (var i in mat) {
-        
+
+    for (var i = 0; i < settings.dim; i++) {
+
         var node_for_a = {
             data: {
                 id: 'a' + '_' + i,
@@ -307,25 +289,50 @@ function generateNodesFromTransitionMatrix() {
 
 function generateEdgesFromTransitionMatrix() {
     cy.edges().remove();
-    var A = settings.transition;
-    var B = math.transpose(galoisInverse(A)); // the inverse transposed
+    var A = settings.transition
+    if (math.detGF(A, 2) == 0) {
+        return;
+    }
+    var B = math.invGF(A, settings.base); // the inverse transposed
+    var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
+    var basis_b = cy.$("#basis_b").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var edges = math.dotMultiply(A, B);
+    var source, target, classes, group;
     for (var i = 0; i < settings.dim; i++) {
         for (var j = 0; j < settings.dim; j++) {
-            if (edges[i][j] == 1) {
-                var edge = {
-                    group: 'edges',
-                    data: {
-                        id: 'left_' + i + '_right_' + j,
-                        source: 'a_' + i,
-                        target: 'b_' + j,
-                        color: 'black',
-                        group: 'both'
-                    },
-                    classes: 'undirected'
-                }
-                cy.add(edge);
+            if (A[i][j] == 0 && B[j][i] == 0) {
+                continue; //no edge
             }
+            source = basis_a[i];
+            target = basis_b[j];
+            if (A[i][j] == 1 && B[i][j] == 1) {
+                classes = "undirected";
+                group = 'both';
+                color = 'black';
+            }
+            else if (A[i][j] == 1) {
+                group: 'ltr';
+                classes = "directed";
+                color = 'green';
+            }
+            else if (B[i][j] == 1) {
+                group: 'rtl';
+                classes = "directed";
+                color = 'orange';
+            }
+            var edge = {
+                group: 'edges',
+                data: {
+                    id: source.id() + "__" + target.id(),
+                    color: color,
+                    source: source.id(),
+                    target: target.id(),
+                    group: group
+                },
+                classes: classes
+            }
+            console.log("added edge: " + edge.data.id);
+            cy.add(edge);
         }
     }
 }
@@ -337,7 +344,6 @@ function bipartite(node) {
 /* event handlers */
 function undirectedEdgeClick(event) {
     aaa = event.cyTarget;
-    console.log(event);
     var edge = event.cyTarget;
     var source_org_position = edge.source().data().extra.pos;
     var target_org_position = edge.target().data().extra.pos;
@@ -350,31 +356,72 @@ function undirectedEdgeClick(event) {
 
     var i = source_org_position.row;
     var j = target_org_position.row;
-    console.log(i);
-    console.log(j);
-    updateTransitionMatrix(i,j);
-    cy.edges('#left_' + j + '_right_' + i).addClass("changed");
+    swapRows(settings.A, settings.B, i, j);
+    settings.transition = updateTransitionMatrix(i, j);
+    generateEdgesFromTransitionMatrix();
+
+    matrixToInput(settings.A, $("#matrix-table-a"));
+    matrixToInput(settings.B, $("#matrix-table-b"));
+    matrixToInput(settings.transition, $("#matrix-table-transition"));
+    console.log(mat2str(settings.transition));
+    console.log(edge.source().id());
+    console.log(edge.target().id());
+    cy.edges('#' + edge.source().id() + "__" + edge.target().id()).addClass("changed");
+    cy.edges('#' + edge.target().id() + "__" + edge.source().id()).addClass("changed");
     cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { } });
 }
 
 
-function updateTransitionMatrix(i, j){
+function updateTransitionMatrix(i, j) {
     var B = settings.transition;
     var T = [];
     for (var k = 0; k < settings.dim; k++) {
         T[k] = [];
         for (var m = 0; m < settings.dim; m++) {
             if (i != k && j != m) {
-              T[k][m] = math.mod(B[k][m] + B[k][i] * B[j][m],2);
+                T[k][m] = math.mod(B[k][m] + B[k][i] * B[j][m], settings.base);
             }
             else {
                 T[k][m] = B[k][m];
             }
         }
     }
-    settings.transition = T;
-    generateEdgesFromTransitionMatrix();
-    
+    return T;
 }
 
+
+
+function mat2str(mat) {
+    var str = "";
+    $(mat).each(function (i, row) {
+        $(row).each(function (j, elem) {
+            str += elem + "\t";
+        });
+        str += "\n";
+    });
+    return str;
+}
+
+
+
+
+function swapToHaveLeadingOne(A, I, index) {
+    if (A[index][index] == 1) {
+        return;
+    }
+    for (var i = index + 1; i < settings.dim; i++) {
+        if (A[i][index] == 1) {
+            A.swap(index, i);
+            I.swap(index, i);
+            return;
+        }
+    }
+}
+
+Array.prototype.swap = function (i, j) {
+    var temp = this[i];
+    this[i] = this[j];
+    this[j] = temp;
+    return this;
+}
 
