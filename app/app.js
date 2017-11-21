@@ -311,12 +311,12 @@ function generateEdgesFromTransitionMatrix() {
                 color = 'green';
                 
             }
-            else if (B[j][i] == 1) {
+            else if (B[i][j] == 1) {
                 group: 'rtl';
                 classes = "directed";
                 color = 'orange';
-                source = basis_b[j];
-                target = basis_a[i];
+                source = basis_b[i];
+                target = basis_a[j];
             }
             var edge = {
                 group: 'edges',
