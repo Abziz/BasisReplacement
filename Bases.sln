@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Bases", "D:\Github\Bases\", "{764C43D1-9687-4A12-84CF-3C8B6CF84BEF}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Bases", "D:\Github\BasisReplacement\", "{764C43D1-9687-4A12-84CF-3C8B6CF84BEF}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_55258"

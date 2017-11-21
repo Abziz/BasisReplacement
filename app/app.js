@@ -10,12 +10,6 @@ var settings = {
     B: math.zeros(10,10)._data
 };
 
-
-
-
-
-
-
 function initPage() {
     $('[data-toggle="tooltip"]').tooltip();
     initButtons();
@@ -291,7 +285,8 @@ function generateEdgesFromTransitionMatrix() {
     cy.edges().remove();
     var A = settings.transition
     if (math.detGF(A, 2) == 0) {
-        return;
+        alert("det = 0");
+        return -1;
     }
     var B = math.invGF(A, settings.base); // the inverse transposed
     var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
@@ -314,11 +309,14 @@ function generateEdgesFromTransitionMatrix() {
                 group: 'ltr';
                 classes = "directed";
                 color = 'green';
+                
             }
-            else if (B[i][j] == 1) {
+            else if (B[j][i] == 1) {
                 group: 'rtl';
                 classes = "directed";
                 color = 'orange';
+                source = basis_b[j];
+                target = basis_a[i];
             }
             var edge = {
                 group: 'edges',
@@ -360,12 +358,10 @@ function undirectedEdgeClick(event) {
     settings.transition = updateTransitionMatrix(i, j);
     generateEdgesFromTransitionMatrix();
 
-    matrixToInput(settings.A, $("#matrix-table-a"));
-    matrixToInput(settings.B, $("#matrix-table-b"));
-    matrixToInput(settings.transition, $("#matrix-table-transition"));
-    console.log(mat2str(settings.transition));
-    console.log(edge.source().id());
-    console.log(edge.target().id());
+    //matrixToInput(settings.A, $("#matrix-table-a"));
+    //matrixToInput(settings.B, $("#matrix-table-b"));
+    //matrixToInput(settings.transition, $("#matrix-table-transition"));
+ 
     cy.edges('#' + edge.source().id() + "__" + edge.target().id()).addClass("changed");
     cy.edges('#' + edge.target().id() + "__" + edge.source().id()).addClass("changed");
     cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { } });
@@ -424,4 +420,6 @@ Array.prototype.swap = function (i, j) {
     this[j] = temp;
     return this;
 }
+
+
 
