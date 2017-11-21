@@ -242,7 +242,7 @@ function swapRows(source, dest, s_pos, d_pos) {
 /* cytoscape related */
 
 function initCytoscapeEvents() {
-    cy.on('tap', 'edge', undirectedEdgeClick);
+    cy.on('tap', 'edge.undirected', undirectedEdgeClick);
 }
 
 
