@@ -402,7 +402,7 @@ function updateTransitionMatrix(i, j) {
     for (var k = 0; k < settings.dim; k++) {
         T[k] = [];
         for (var m = 0; m < settings.dim; m++) {
-            if (i != m && j != k) {
+            if (i != k && j != m) {
                 T[k][m] = math.mod(B[k][m] + B[k][i] * B[j][m], settings.base);
             }
             else {
