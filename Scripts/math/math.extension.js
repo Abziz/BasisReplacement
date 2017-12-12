@@ -3,7 +3,6 @@
         if (math.detGF(M,n) == 0) {
             throw 'error det = 0'
         }
-        console.log(M);
         
         var A = math.clone(M);
         var size = A.length;
@@ -16,7 +15,6 @@
                         if (A[j][i] == 1) {
                             A.swap(i, j);
                             I.swap(i, j);
-                            console.log("swapped row " + i + " with row " + j);
                             break;
                         }
                     }
@@ -26,7 +24,6 @@
                     if (A[k][i] == 1) {
                         A[k] = math.mod(math.add(A[k], A[i]), n);
                         I[k] = math.mod(math.add(I[k], I[i]), n);
-                        console.log("added row "+i+ " to row "+k);
                     }
                 }
             }
@@ -40,12 +37,6 @@
                 }
             }
         }
-        console.log("M:");
-        console.log(M);
-        console.log("I:");
-        console.log(I);
-        console.log("M * I");
-        console.log(math.mod(math.multiply(M,I),2))
         return I;
     },
 

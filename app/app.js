@@ -2,6 +2,8 @@
 var nodes;
 var selected;
 var gen = 0;
+var show_directed = false;
+var show_undirected = true;
 var settings = {
     dim: 10,
     base: 2,
@@ -100,6 +102,19 @@ function initButtons() {
         adjustView();
     });
 
+    $("#edges-undirected-btn").click(function (e) {
+        cy.$(".directed").hide();
+        show_directed = false;
+        cy.$(".undirected").show();
+        show_undirected = true;
+    });
+    $("#edges-directed-btn").click(function (e) {
+        cy.$(".directed").show();
+        show_directed = true;
+        cy.$(".undirected").hide();
+        show_undirected = false;
+    });
+
     $("input:radio[name='input-methods']").change(function (e) {
         updateMethodTitle();
         var selected = $(this).attr('id');
@@ -148,15 +163,20 @@ function initButtons() {
     $("#load-btn").click(function (e) {
         generateNodesFromTransitionMatrix();
         generateEdgesFromTransitionMatrix();
+        if (!show_directed) {
+            cy.$(".directed").hide();
+        }
+        if (!show_undirected) {
+            cy.$(".undirected").hide();
+        }
         cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: adjustView });
+        $(".edges-btns").fadeIn();
     });
 
     $(".calc-btn").click(function (e) {
         settings.A = inputToMatrix($("#matrix-table-a"));
         settings.B = inputToMatrix($("#matrix-table-b"));
         settings.transition = math.transitionMatrixGF(settings.A, settings.B, settings.base);
-        console.log(mat2str(settings.A));
-        console.log(mat2str(settings.B));
         matrixToInput(settings.transition, $("#matrix-table-transition"));
     });
 
@@ -292,10 +312,12 @@ function generateEdgesFromTransitionMatrix() {
     var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var basis_b = cy.$("#basis_b").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var edges = math.dotMultiply(A, B);
+    console.log(A);
+    console.log(B)
     var source, target, classes, group;
     for (var i = 0; i < settings.dim; i++) {
         for (var j = 0; j < settings.dim; j++) {
-            if (A[i][j] == 0 && B[j][i] == 0) {
+            if (A[i][j] == 0 && B[i][j] == 0) {
                 continue; //no edge
             }
             source = basis_a[i];
@@ -329,7 +351,6 @@ function generateEdgesFromTransitionMatrix() {
                 },
                 classes: classes
             }
-            console.log("added edge: " + edge.data.id);
             cy.add(edge);
         }
     }
@@ -364,17 +385,24 @@ function undirectedEdgeClick(event) {
  
     cy.edges('#' + edge.source().id() + "__" + edge.target().id()).addClass("changed");
     cy.edges('#' + edge.target().id() + "__" + edge.source().id()).addClass("changed");
+    if (!show_directed) {
+        cy.$(".directed").hide();
+    }
+    if (!show_undirected) {
+        cy.$(".undirected").hide();
+    }
     cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { } });
 }
 
 
 function updateTransitionMatrix(i, j) {
     var B = settings.transition;
+    console.log(B);
     var T = [];
     for (var k = 0; k < settings.dim; k++) {
         T[k] = [];
         for (var m = 0; m < settings.dim; m++) {
-            if (i != k && j != m) {
+            if (i != m && j != k) {
                 T[k][m] = math.mod(B[k][m] + B[k][i] * B[j][m], settings.base);
             }
             else {
@@ -382,7 +410,8 @@ function updateTransitionMatrix(i, j) {
             }
         }
     }
-    return T;
+    console.log(T);
+    return T
 }
 
 
