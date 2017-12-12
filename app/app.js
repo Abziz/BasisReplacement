@@ -308,7 +308,7 @@ function generateEdgesFromTransitionMatrix() {
         alert("det = 0");
         return -1;
     }
-    var B = math.invGF(A, settings.base); // the inverse transposed
+    var B = math.transpose(math.invGF(A, settings.base)); // the inverse transposed
     var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var basis_b = cy.$("#basis_b").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var edges = math.dotMultiply(A, B);
