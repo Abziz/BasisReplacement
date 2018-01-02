@@ -304,16 +304,21 @@ function generateNodesFromTransitionMatrix() {
 function generateEdgesFromTransitionMatrix() {
     cy.edges().remove();
     var A = settings.transition
-    if (math.detGF(A, 2) == 0) {
+    if (math.detGF(A, settings.base) == 0) {
         alert("det = 0");
         return -1;
     }
+    console.log("saddsa",settings.transition);
+
     var B = math.transpose(math.invGF(A, settings.base)); // the inverse transposed
+
     var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var basis_b = cy.$("#basis_b").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
-    var edges = math.dotMultiply(A, B);
+   // var edges = math.dotMultiply(A, B);
+    console.log("T:")
     console.log(A);
-    console.log(B)
+    console.log("Tt:")
+    console.log(B);
     var source, target, classes, group;
     for (var i = 0; i < settings.dim; i++) {
         for (var j = 0; j < settings.dim; j++) {
@@ -322,7 +327,7 @@ function generateEdgesFromTransitionMatrix() {
             }
             source = basis_a[i];
             target = basis_b[j];
-            if (A[i][j] == 1 && B[i][j] == 1) {
+            if ( (A[i][j] == 1) && (B[i][j] == 1)) {
                 classes = "undirected";
                 group = 'both';
                 color = 'black';
@@ -396,22 +401,24 @@ function undirectedEdgeClick(event) {
 
 
 function updateTransitionMatrix(i, j) {
-    var B = settings.transition;
+    var B = math.transpose(settings.transition);
+    
     console.log(B);
     var T = [];
     for (var k = 0; k < settings.dim; k++) {
         T[k] = [];
         for (var m = 0; m < settings.dim; m++) {
-            if (i != k && j != m) {
-                T[k][m] = math.mod(B[k][m] + B[k][i] * B[j][m], settings.base);
+            if (j != k && i != m) {
+                T[k][m] = math.mod(B[k][m] + (B[k][i] * B[j][m]), settings.base);
             }
             else {
                 T[k][m] = B[k][m];
             }
         }
     }
-    console.log(T);
-    return T
+    
+    T = math.transpose(T);
+    return T;
 }
 
 
