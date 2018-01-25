@@ -29,119 +29,138 @@
         <div id="sidebar-wrapper" >
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12 text-center">
-                        <div class="form-group">
-                            <div class="btn-group special" data-toggle="buttons">
-                                <label class="btn btn-outline-dark active">
-                                    <input type="radio" name="input-methods" data-name="Transition Matrix" id="i_m_1" checked> <i class="fa fa-th"></i>
-                                </label>
-                                <label class="btn btn-outline-dark">
-                                    <input type="radio" name="input-methods" data-name="Two Matrices" id="i_m_2"> <i class="fa fa-th"></i> <i class="fa fa-th"></i>
-                                </label>
-                            </div>
-                            <p id="method-title"></p>
-                        </div>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-dark">
-                                        Dimmension
-                                    </button>
-                                </span>
-                                <select id="select-dim" class="form-control">
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10" selected>10</option>
-                                </select>
-                            </div>
-                        </div>
+					<div class="col-12 text-center">
+						<div class="form-group">
+							<div class="btn-group special" data-toggle="buttons">
+								<label class="btn btn-outline-dark active">
+									<input type="radio" name="input-methods" data-name="Transition Matrix" id="i_m_1" checked> <i class="fa fa-th"></i>
+								</label>
+								<label class="btn btn-outline-dark">
+									<input type="radio" name="input-methods" data-name="Two Matrices" id="i_m_2"> <i class="fa fa-th"></i> <i class="fa fa-th"></i>
+								</label>
+							</div>
+							<p id="method-title"></p>
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-btn">
+									<button class="btn btn-dark">
+										Dimmension
+									</button>
+								</span>
+								<select id="select-dim" class="form-control">
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10" selected>10</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-btn">
+									<button class="btn btn-dark">
+										Field
+									</button>
+								</span>
+								<select id="select-field" class="form-control">
+									<option value="0" selected>Real</option>
+									<option value="2">Binary</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group" id="transition-matrix-group">
+							<div class="card text-white bg-dark mb-3 matrix-card">
+								<div class="btn-group special" id="transition-matrix-btn-group">
+									<button class="btn btn-dark small matrix-btn" style="flex:3"
+											data-toggle="tooltip"
+											title="Show/Hide matrix">
+										Transition Matrix
+									</button>
+									<button class="btn btn-dark calc-btn" style="display:none"
+											data-toggle="tooltip"
+											title="Calculate transition matrix from the matrices below">
+										<i class="fa fa-calculator"></i>
+									</button>
+									<button class="btn btn-dark random-btn t-mat-only"
+											data-toggle="tooltip"
+											title="Generate a random transition matrix">
+										<i class="fa fa-cube"></i>
+									</button>
+									<button class="btn btn-dark clear-btn t-mat-only"
+											data-toggle="tooltip"
+											title="Clear matrix">
+										<i class="fa fa-eraser"></i>
+									</button>
+								</div>
+								<div class="card-body">
+									<table id="matrix-table-transition" class="matrix">
+										<tbody></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 
-                        <div class="form-group" id="transition-matrix-group">
-                            <div class="card text-white bg-dark mb-3 matrix-card">
-                                <div class="btn-group special" id="transition-matrix-btn-group">
-                                    <button class="btn btn-dark small matrix-btn" style="flex:3"
-                                            data-toggle="tooltip"
-                                            title="Show/Hide matrix">Transition Matrix</button>
-                                    <button class="btn btn-dark calc-btn" style="display:none"
-                                            data-toggle="tooltip"
-                                            title="Calculate transition matrix from the matrices below">
-                                        <i class="fa fa-calculator"></i>
-                                    </button>
-                                    <button class="btn btn-dark random-btn t-mat-only"
-                                            data-toggle="tooltip"
-                                            title="Generate a random transition matrix">
-                                        <i class="fa fa-cube"></i></button>
-                                    <button class="btn btn-dark clear-btn t-mat-only"
-                                            data-toggle="tooltip"
-                                            title="Clear matrix">
-                                        <i class="fa fa-eraser"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body">
-                                    <table id="matrix-table-transition" class="matrix">
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+						<div class="form-group" id="matrix-a-group" style="display:none">
+							<div class="card text-white bg-dark mb-3 matrix-card">
+								<div class="btn-group special" id="matrix-a-btn-group">
+									<button class="btn btn-dark small matrix-btn" style="flex:3"
+											data-toggle="tooltip"
+											title="Show/Hide matrix">
+										Basis #1
+									</button>
+									<button class="btn btn-dark random-basis-btn"
+											data-toggle="tooltip"
+											title="Generate a random basis">
+										<i class="fa fa-cube"></i>
+									</button>
+									<button class="btn btn-dark clear-btn"
+											data-toggle="tooltip"
+											title="Clear matrix">
+										<i class="fa fa-eraser"></i>
+									</button>
+								</div>
+								<div class="card-body" style="display:none">
+									<table id="matrix-table-a" class="matrix">
+										<tbody></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 
-                        <div class="form-group" id="matrix-a-group"  style="display:none">
-                            <div class="card text-white bg-dark mb-3 matrix-card">
-                                <div class="btn-group special" id="matrix-a-btn-group">
-                                    <button class="btn btn-dark small matrix-btn" style="flex:3"
-                                            data-toggle="tooltip"
-                                            title="Show/Hide matrix">Basis #1</button>
-                                    <button class="btn btn-dark random-basis-btn"
-                                            data-toggle="tooltip"
-                                            title="Generate a random basis">
-                                        <i class="fa fa-cube"></i>
-                                    </button>
-                                    <button class="btn btn-dark clear-btn"
-                                            data-toggle="tooltip"
-                                            title="Clear matrix">
-                                        <i class="fa fa-eraser"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body" style="display:none">
-                                    <table id="matrix-table-a" class="matrix">
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+						<div class="form-group" id="matrix-b-group" style="display:none">
+							<div class="card text-white bg-dark mb-3 matrix-card">
+								<div class="btn-group special" id="matrix-b-btn-group" width="100%">
+									<button class="btn btn-dark matrix-btn" style="flex:3"
+											data-toggle="tooltip"
+											title="Show/Hide matrix">
+										Basis #2
+									</button>
+									<button class="btn btn-dark random-basis-btn"
+											data-toggle="tooltip"
+											title="Generate a random basis">
+										<i class="fa fa-cube"></i>
+									</button>
+									<button class="btn btn-dark clear-btn"
+											data-toggle="tooltip"
+											title="Clear matrix">
+										<i class="fa fa-eraser"></i>
+									</button>
+								</div>
+								<div class="card-body" style="display:none">
+									<table id="matrix-table-b" class="matrix">
+										<tbody></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 
-                        <div class="form-group" id="matrix-b-group" style="display:none">
-                            <div class="card text-white bg-dark mb-3 matrix-card">
-                                <div class="btn-group special" id="matrix-b-btn-group" width="100%">
-                                    <button class="btn btn-dark matrix-btn" style="flex:3" 
-                                            data-toggle="tooltip"
-                                            title="Show/Hide matrix">Basis #2</button>
-                                    <button class="btn btn-dark random-basis-btn" 
-                                            data-toggle="tooltip"
-                                            title="Generate a random basis">
-                                        <i class="fa fa-cube"></i>
-                                    </button>
-                                    <button class="btn btn-dark clear-btn" 
-                                            data-toggle="tooltip"
-                                            title="Clear matrix">
-                                        <i class="fa fa-eraser"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body" style="display:none">
-                                    <table id="matrix-table-b" class="matrix"  >
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
- 
-                    </div>
+					</div>
                 </div>
             </div>
         </div>

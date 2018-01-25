@@ -6,7 +6,7 @@ var show_directed = false;
 var show_undirected = true;
 var settings = {
     dim: 10,
-    base: 2,
+    base: 0,
     transition: math.zeros(10, 10)._data,
     A: math.zeros(10, 10)._data,
     B: math.zeros(10,10)._data
@@ -107,7 +107,8 @@ function initButtons() {
         show_directed = false;
         cy.$(".undirected").show();
         show_undirected = true;
-    });
+	});
+
     $("#edges-directed-btn").click(function (e) {
         cy.$(".directed").show();
         show_directed = true;
@@ -140,6 +141,9 @@ function initButtons() {
         UpdateMatrixDimension($(this).val());
     })
 
+	$("#select-field").change(function (e) {
+		settings.base = parseInt($(this).val());
+	})
     /** if transition matrix doesnt have to be a regular
     $(".random-btn").click(function (e) {
         if (!$(this).parent().next().is(":visible")) {
@@ -152,8 +156,9 @@ function initButtons() {
     $(".random-basis-btn ,.random-btn").click(function (e) {
         if (!$(this).parent().next().is(":visible")) {
             $(this).parent().next().slideToggle(500);
-        }
-        matrixToInput(math.randBasisGF(settings.dim, 2), $(this).parent().next().find("table"));
+		}
+		settings.transition = math.RandomBasis(settings.dim, settings.base);
+		matrixToInput(settings.transition, $(this).parent().next().find("table"));
     });
 
     $(".clear-btn").click(function (e) {
@@ -176,7 +181,7 @@ function initButtons() {
     $(".calc-btn").click(function (e) {
         settings.A = inputToMatrix($("#matrix-table-a"));
         settings.B = inputToMatrix($("#matrix-table-b"));
-        settings.transition = math.transitionMatrixGF(settings.A, settings.B, settings.base);
+        settings.transition = math.TransitionMatrix(settings.A, settings.B, settings.base);
         matrixToInput(settings.transition, $("#matrix-table-transition"));
     });
 
@@ -244,8 +249,12 @@ function inputToMatrix(elem) {
     var matrix = [];
     for (var i = 0; i < n; i++) {
         matrix[i] = [];
-        for (var j = 0; j < n; j++) {
-            matrix[i][j] = parseInt($(input.get(i * n + j)).val());
+		for (var j = 0; j < n; j++) {
+			if (settings.base == 2) {
+				matrix[i][j] = parseInt($(input.get(i * n + j)).val());
+			} else {
+				matrix[i][j] = parseFloat($(input.get(i * n + j)).val());
+			}
         }
     }
     return matrix;
@@ -304,21 +313,17 @@ function generateNodesFromTransitionMatrix() {
 function generateEdgesFromTransitionMatrix() {
     cy.edges().remove();
     var A = settings.transition
-    if (math.detGF(A, settings.base) == 0) {
+    if (math.Det(A, settings.base) == 0) {
         alert("det = 0");
         return -1;
     }
     console.log("saddsa",settings.transition);
 
-    var B = math.transpose(math.invGF(A, settings.base)); // the inverse transposed
+    var B = math.transpose(math.Inv(A, settings.base)); // the inverse transposed
 
     var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
     var basis_b = cy.$("#basis_b").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
    // var edges = math.dotMultiply(A, B);
-    console.log("T:")
-    console.log(A);
-    console.log("Tt:")
-    console.log(B);
     var source, target, classes, group;
     for (var i = 0; i < settings.dim; i++) {
         for (var j = 0; j < settings.dim; j++) {
@@ -327,37 +332,58 @@ function generateEdgesFromTransitionMatrix() {
             }
             source = basis_a[i];
             target = basis_b[j];
-            if ( (A[i][j] == 1) && (B[i][j] == 1)) {
+            if ( (A[i][j] != 0) && (B[i][j] != 0)) {
                 classes = "undirected";
                 group = 'both';
-                color = 'black';
-            }
-            else if (A[i][j] == 1) {
+				color = 'black';
+				cy.add({
+					group: 'edges',
+					data: {
+						id: source.id() + "_b_" + target.id(),
+						color: color,
+						source: source.id(),
+						target: target.id(),
+						group: group
+					},
+					classes: classes
+				});
+			}
+
+            if (A[i][j] != 0) {
                 group: 'ltr';
                 classes = "directed";
-                color = 'green';
-                
+				color = 'green';
+				cy.add({
+					group: 'edges',
+					data: {
+						id: source.id() + "_g_" + target.id(),
+						color: color,
+						source: source.id(),
+						target: target.id(),
+						group: group
+					},
+					classes: classes
+				});
             }
-            else if (B[i][j] == 1) {
+            if (B[i][j] != 0) {
                 group: 'rtl';
                 classes = "directed";
                 color = 'orange';
                 source = basis_b[i];
-                target = basis_a[j];
+				target = basis_a[j];
+				cy.add({
+					group: 'edges',
+					data: {
+						id: source.id() + "_o_" + target.id(),
+						color: color,
+						source: source.id(),
+						target: target.id(),
+						group: group
+					},
+					classes: classes
+				});
             }
-            var edge = {
-                group: 'edges',
-                data: {
-                    id: source.id() + "__" + target.id(),
-                    color: color,
-                    source: source.id(),
-                    target: target.id(),
-                    group: group
-                },
-                classes: classes
-            }
-            cy.add(edge);
-        }
+		}
     }
 }
 
@@ -408,12 +434,28 @@ function updateTransitionMatrix(i, j) {
     for (var k = 0; k < settings.dim; k++) {
         T[k] = [];
         for (var m = 0; m < settings.dim; m++) {
-            if (j != k && i != m) {
-                T[k][m] = math.mod(B[k][m] + (B[k][i] * B[j][m]), settings.base);
-            }
-            else {
-                T[k][m] = B[k][m];
-            }
+			if (settings.base == 2) {
+				if (j != k && i != m) {
+					T[k][m] = math.mod(B[k][m] + (B[k][i] * B[j][m]), settings.base);
+				}
+				else {
+					T[k][m] = B[k][m];
+				}
+			} else {
+				if (k != j && m != i) {
+					T[k][m] = B[k][m] - (B[k][i] * B[j][m] / B[j][i]); 
+				}
+				else if (k != j && m == i) {
+					T[k][m] = -(B[k][i]/B[j][i]); 
+				}
+				else if (k == j && m != i) {
+					T[k][m] = B[j][m] / B[j][i];
+				}
+				else if( k==j && m == i) {
+					T[k][m] = 1 / B[j][i];
+				}
+			}
+
         }
     }
     

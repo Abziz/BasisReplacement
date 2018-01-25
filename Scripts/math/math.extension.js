@@ -1,7 +1,13 @@
 ﻿math.import({
-    invGF: function invGF(M, n) {
-        if (math.detGF(M,n) == 0) {
-            throw 'error det = 0'
+	Inv: function (M, n=0) {
+		if (n==0) {
+			if (math.det(M) == 0) {
+				throw 'error det = 0';
+			}
+			return math.inv(M);
+		}
+        if (math.Det(M,n) == 0) {
+			throw 'error det = 0';
         }
         
         var A = math.clone(M);
@@ -40,23 +46,27 @@
         return I;
     },
 
-    randGF: function (size, n) {
+	Rand: function (size, n=0) {
+		if (n == 0) {
+			return math.random([size, size]);
+		}
+		console.log(size);
         return math.floor(math.random([size, size], 0, n));
     },
 
-    randBasisGF: function (size, n) {
-        var mat;
+    RandomBasis: function (size, n=0) {
+		var mat;
         do {
-            mat = math.randGF(size, n);
-        } while (math.detGF(mat,n) == 0);
+            mat = math.Rand(size, n);
+        } while (math.Det(mat,n) == 0);
         return mat;
     },
 
-    transitionMatrixGF: function (A, B, n) {
-        return math.mod(math.multiply(math.invGF(A,n),B),n);
+    TransitionMatrix: function (A, B, n=0) {
+        return math.mod(math.multiply(math.Inv(A,n),B),n);
     },
 
-    detGF: function (A, n) {
+	Det: function (A, n=0) {
         return math.mod(math.det(A), n);
     }
 
