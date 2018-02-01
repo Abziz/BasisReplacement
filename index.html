@@ -1,34 +1,46 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title> Base replacements</title>
-    <!-- bootstrap css-->
-    <link rel="stylesheet" href="Content/bootstrap.min.css">
-    <!-- font awesome css-->
-    <link rel="stylesheet" href="Content/font-awesome.min.css" />
-    <!-- jquery and bootstrap js-->
-    <script type="text/javascript" src="Scripts/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="Scripts/umd/popper.min.js"></script>
-    <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
-    <!-- cytoscape -->
-    <script type="text/javascript" src="Scripts/cytoscape.min.js"></script>
-    <!-- math -->
-    <script type="text/javascript" src="Scripts/math/math.min.js"></script>
-    <script type="text/javascript" src="Scripts/math/math.extension.js"></script>
-    <!-- sidebar css-->
-    <link rel="stylesheet" href="Content/sidebar.css">
-    <!-- app -->
-    <link rel="stylesheet" href="app/app.css" />
-    <script type="text/javascript" src="app/app.js"></script>
+	<meta charset="utf-8" />
+	<title> Base replacements</title>
+	<!-- bootstrap css-->
+	<link rel="stylesheet" href="Content/bootstrap.min.css">
+	<!-- font awesome css-->
+	<link rel="stylesheet" href="Content/font-awesome.min.css" />
+	<!-- jquery and bootstrap js-->
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+	<script>
+		var config = {
+			apiKey: "AIzaSyADKXGmYfYhzUbJNdiQXzddUaZUcHynPtA",
+			authDomain: "basisreplacement.firebaseapp.com",
+			databaseURL: "https://basisreplacement.firebaseio.com",
+			projectId: "basisreplacement",
+			storageBucket: "basisreplacement.appspot.com",
+			messagingSenderId: "953530489047"
+		};
+		firebase.initializeApp(config);
+	</script>
+	<script type="text/javascript" src="Scripts/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="Scripts/umd/popper.min.js"></script>
+	<script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+	<!-- cytoscape -->
+	<script type="text/javascript" src="Scripts/cytoscape.min.js"></script>
+	<!-- math -->
+	<script type="text/javascript" src="Scripts/math/math.min.js"></script>
+	<script type="text/javascript" src="Scripts/math/math.extension.js"></script>
+	<!-- sidebar css-->
+	<link rel="stylesheet" href="Content/sidebar.css">
+	<!-- app -->
+	<link rel="stylesheet" href="app/app.css" />
+	<script type="text/javascript" src="app/app.js"></script>
 </head>
 
 <body>
-    <div id="wrapper" class="toggled">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper" >
-            <div class="container-fluid">
-                <div class="row">
+	<div id="wrapper" class="toggled">
+		<!-- Sidebar -->
+		<div id="sidebar-wrapper">
+			<div class="container-fluid">
+				<div class="row">
 					<div class="col-12 text-center">
 						<div class="form-group">
 							<div class="btn-group special" data-toggle="buttons">
@@ -87,6 +99,12 @@
 											title="Calculate transition matrix from the matrices below">
 										<i class="fa fa-calculator"></i>
 									</button>
+									<button class="btn btn-dark"
+											id="load-matrix-btn"
+											data-toggle="tooltip"
+											title="Saved matrices">
+										<i class="fa fa-cloud-download"></i>
+									</button>
 									<button class="btn btn-dark random-btn t-mat-only"
 											data-toggle="tooltip"
 											title="Generate a random transition matrix">
@@ -99,7 +117,7 @@
 									</button>
 								</div>
 								<div class="card-body">
-									<table id="matrix-table-transition" class="matrix">
+									<table id="matrix-table-original" class="matrix">
 										<tbody></tbody>
 									</table>
 								</div>
@@ -124,6 +142,7 @@
 											title="Clear matrix">
 										<i class="fa fa-eraser"></i>
 									</button>
+
 								</div>
 								<div class="card-body" style="display:none">
 									<table id="matrix-table-a" class="matrix">
@@ -160,36 +179,91 @@
 							</div>
 						</div>
 
+						<div class="form-group" id="current-transition-matrix">
+							<div class="card text-white bg-dark mb-3 matrix-card">
+								<div class="btn-group special" id="matrix-transition-btn-group" width="100%">
+									<button class="btn btn-dark small matrix-btn" style="flex:3"
+											data-toggle="tooltip"
+											title="Show/Hide matrix">
+										Current Transition Matrix
+									</button>
+									<button class="btn btn-dark back"
+											data-toggle="tooltip"
+											title="undo one step"
+											disabled>
+										<i class="fa fa-backward"></i>
+									</button>
+									<button class="btn btn-dark save-btn"
+											data-toggle="tooltip"
+											title="Save matrix">
+										<i class="fa fa-save"></i>
+									</button>
+									<button class="btn btn-dark back"
+											data-toggle="tooltip"
+											title="redo one step"
+											disabled>
+										<i class="fa fa-forward"></i>
+									</button>
+								</div>
+								<div class="card-body" style="display:none">
+									<h4>Normal:</h4>
+									<table id="matrix-table-transition" class="matrix">
+										<tbody></tbody>
+									</table>
+									<h4>Inverse:</h4>
+									<table id="matrix-table-transition-inverse" class="matrix">
+										<tbody></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
 					</div>
-                </div>
-            </div>
-        </div>
-        <!-- /#sidebar-wrapper -->
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
+				</div>
+			</div>
+		</div>
+		<!-- /#sidebar-wrapper -->
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
 
-            <div id="toolbar">
-                <a href="#" class="btn btn-light" id="menu-btn"><i class="fa fa-bars"></i></a>
-                <a href="#" class="btn btn-light" id="home-btn"><i class="fa fa-home"></i></a>
-                <a href="#" class="btn btn-light" id="load-btn"><i class="fa fa-share-alt"></i></a>
-                
-                    <a href="#" style="display:none" class="btn btn-light edges-btns" id="edges-undirected-btn"><i class="fa fa-arrows-h"></i></a>
-                    <a href="#" style="display:none" class="btn btn-light edges-btns" id="edges-directed-btn"><i class="fa fa-exchange"></i></a>
-                
-            </div>
-            <div id="cy">
+			<div id="toolbar">
+				<a href="#" class="btn btn-light" id="menu-btn"><i class="fa fa-bars"></i></a>
+				<a href="#" class="btn btn-light" id="home-btn"><i class="fa fa-home"></i></a>
+				<a href="#" class="btn btn-light" id="load-btn"><i class="fa fa-share-alt"></i></a>
+				<a href="#" style="display:none" class="btn btn-light edges-btns" id="edges-undirected-btn"><i class="fa fa-arrows-h"></i></a>
+				<a href="#" style="display:none" class="btn btn-light edges-btns" id="edges-directed-btn"><i class="fa fa-exchange"></i></a>
 
-            </div>
+			</div>
+			<div id="cy">
 
-        </div>
-        <!-- /#page-content-wrapper -->
+			</div>
 
-    </div>
-    <!-- /#wrapper -->
-    <script type="text/javascript">
-        $(function () {
-            initPage();
-        });
-    </script>
+		</div>
+		<!-- /#page-content-wrapper -->
+		<div class="modal fade" id="load-matrix-modal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Load a saved transition matrix</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /#wrapper -->
+	<script type="text/javascript">
+		$(function () {
+			initPage();
+		});
+	</script>
 </body>
 </html>
