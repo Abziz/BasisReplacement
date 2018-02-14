@@ -48,7 +48,7 @@
 
 	Rand: function (size, n=0) {
 		if (n == 0) {
-			return math.random([size, size]);
+			return math.floor(math.random([size, size], 0, 2));
 		}
 		console.log(size);
         return math.floor(math.random([size, size], 0, n));
