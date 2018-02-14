@@ -350,7 +350,7 @@ function generateEdgesFromTransitionMatrix() {
 	}
 	console.log("saddsa", settings.transition);
 
-	var B = math.transpose(math.Inv(A, settings.base)); // the inverse transposed
+	var B = math.Inv(A, settings.base); // the inverse transition
 
 	var basis_a = cy.$("#basis_a").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
 	var basis_b = cy.$("#basis_b").children().sort(function (a, b) { return a.data().extra.pos.row - b.data().extra.pos.row });
@@ -358,12 +358,9 @@ function generateEdgesFromTransitionMatrix() {
 	var source, target, classes, group;
 	for (var i = 0; i < settings.dim; i++) {
 		for (var j = 0; j < settings.dim; j++) {
-			if (A[i][j] == 0 && B[i][j] == 0) {
-				continue; //no edge
-			}
-			source = basis_a[i];
-			target = basis_b[j];
-			if ((A[i][j] != 0) && (B[i][j] != 0)) {
+			if ((A[i][j] != 0) && (B[j][i] != 0)) {
+				source = basis_a[i];
+				target = basis_b[j];
 				classes = "undirected";
 				group = 'both';
 				color = 'black';
@@ -381,6 +378,8 @@ function generateEdgesFromTransitionMatrix() {
 			}
 
 			if (A[i][j] != 0) {
+				source = basis_a[i];
+				target = basis_b[j];
 				group: 'ltr';
 				classes = "directed";
 				color = 'green';
