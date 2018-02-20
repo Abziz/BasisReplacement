@@ -232,7 +232,8 @@ function loadMatrixSettings(e) {
 	$("#select-dim").val(opts.dim).change();
 	$("#select-field").val(opts.base).change();
 	settings.transition = math.clone(opts.transition)
-	matrixToInput(settings.transition,$("#matrix-table-original"))
+	matrixToInput(settings.transition, $("#matrix-table-original"))
+	$("#load-matrix-modal").modal('hide');
 }
 function deleteMatrixSettings(e) {
 	console.log($(this).data('key'));
