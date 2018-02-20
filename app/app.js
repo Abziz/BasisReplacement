@@ -4,14 +4,17 @@ var selected;
 var gen = 0;
 var show_directed = false;
 var show_undirected = true;
+
 var settings = {
 	dim: 10,
 	base: 0,
 	transition: math.zeros(10, 10)._data,
+	original: null,
 	A: math.zeros(10, 10)._data,
 	B: math.zeros(10, 10)._data,
-	history: []
+	history: {prev: [], next: [] }
 };
+var database = firebase.database();
 
 function initPage() {
 	$('[data-toggle="tooltip"]').tooltip();
@@ -89,6 +92,27 @@ function initPage() {
 		]
 	});
 	initCytoscapeEvents();
+	initSavedMatrices();
+}
+
+function initSavedMatrices() {
+	var ref = database.ref('saved');
+	ref.on('value', listSavedMatrices, function (err) { console.log(err) });
+}
+
+function listSavedMatrices(data) {
+	$("#matrix-list").empty()
+	$.each(data.val(), function (i, v) {
+		let clone = $("#item-template>div").clone();
+		let name = v.name || "לא נבחר שם";
+		let base = v.base || "Real"
+		$(".item-name", clone).text(name);
+		$(".item-dim", clone).text("dim: " + v.dim);
+		$(".item-base", clone).text("base: " +base);
+		$(".item-load",clone).data("settings", v);
+		$(".item-delete",clone).data("key", i);
+		$("#matrix-list").append(clone);
+	});
 }
 
 function initButtons() {
@@ -161,10 +185,12 @@ function initButtons() {
 	$("#load-btn").click(function (e) {
 		turnEmptyInputToZero();
 		copyOriginalToCurrent();
+		$("#current-transition-matrix>div>.card-body").slideToggle(500);
 		generateNodesFromTransitionMatrix();
 		generateEdgesFromTransitionMatrix();
-		settings.history = [];
-		settings.history.push(math.clone(settings.transition));
+		settings.history = {prev: [], next: [] }
+		settings.original = math.clone(settings.transition);
+		settings.current = 0;
 		if (!show_directed) {
 			cy.$(".directed").hide();
 		}
@@ -185,7 +211,7 @@ function initButtons() {
 		settings.A = inputToMatrix($("#matrix-table-a"));
 		settings.B = inputToMatrix($("#matrix-table-b"));
 		settings.transition = math.TransitionMatrix(settings.A, settings.B, settings.base);
-		matrixToInput(settings.transition, $("#matrix-table-transition"));
+		matrixToInput(settings.transition, $("#matrix-table-original"));
 	});
 
 	$(document).on('click', '.save-matrix-confirm', saveMatrixSettings);
@@ -194,15 +220,43 @@ function initButtons() {
 		container: 'body',
 		content: '<div class="input-group"><span class="input-group-btn"><button class="btn btn-dark save-matrix-confirm"><i class="fa fa-save"></i></button></span><input class="form-control" placeholder="Give this matrix a name..."></div>'
 	});
+	$(document).on('click', '.item-delete', deleteMatrixSettings);
+	$(document).on('click', '.item-load', loadMatrixSettings);
+	$("#next-btn").click(goNext);
+	$("#prev-btn").click(goPrev);
+}
+
+
+function loadMatrixSettings(e) {
+	var opts = $(this).data("settings");
+	$("#select-dim").val(opts.dim).change();
+	$("#select-field").val(opts.base).change();
+	settings.transition = math.clone(opts.transition)
+	matrixToInput(settings.transition,$("#matrix-table-original"))
+}
+function deleteMatrixSettings(e) {
+	console.log($(this).data('key'));
+	var key = $(this).data('key');
+	database.ref("saved").child(key).remove();
 }
 
 function saveMatrixSettings(e) {
-//TODO
-
+	var name = $(this).parent().parent().find('input').val();
+	if (!name) {
+		alert("Please fill in a name for the matrix");
+		return false;
+	}
+	var ref = database.ref("saved")
+	ref.push({
+		name: name,
+		dim: settings.dim,
+		base: settings.base,
+		transition: settings.transition
+	});
+	$(".save-btn").popover("hide");
+	alert("Matrix successfully saved");
 	e.preventDefault();
 }
-
-
 
 function adjustView() {
 	cy.resize().animate({ fit: cy.elements });
@@ -218,8 +272,6 @@ function copyOriginalToCurrent() {
 	matrixToInput(settings.transition, $("#matrix-table-transition"));
 	matrixToInput(math.Inv(settings.transition, settings.base), $("#matrix-table-transition-inverse"));
 }
-
-
 
 function createMatrixTables() {
 	$("[id^=matrix-table] tbody").each(function (i, table) {
@@ -301,7 +353,6 @@ function swapRows(source, dest, s_pos, d_pos) {
 }
 
 /* cytoscape related */
-
 function initCytoscapeEvents() {
 	cy.on('tap', 'edge.undirected', undirectedEdgeClick);
 }
@@ -425,33 +476,45 @@ function bipartite(node) {
 function undirectedEdgeClick(event) {
 	aaa = event.cyTarget;
 	var edge = event.cyTarget;
-	var source_org_position = edge.source().data().extra.pos;
-	var target_org_position = edge.target().data().extra.pos;
-	var source_org_parent = edge.source().parent().id();
-	var target_org_parent = edge.target().parent().id();
-	edge.source().data().extra.pos = target_org_position;
-	edge.target().data().extra.pos = source_org_position;
-	edge.source().move({ parent: target_org_parent });
-	edge.target().move({ parent: source_org_parent });
+	var a = edge.source().id();
+	var b = edge.target().id();
+	if (settings.current < settings.length - 1) {
+		settings.history = settings.history.slice(0, settings.current + 1);
+	}
+	swapNodes(a, b)
+	settings.history.next = [];
+	settings.history.prev.push({ a: a, b: b });
+	enableNextPrev();
+}
 
-	var i = source_org_position.row;
-	var j = target_org_position.row;
+function swapNodes(a, b) {
+	let node_a = cy.$('#' + a);
+	let node_b = cy.$('#' + b);
+	let source_org_position = node_a.data().extra.pos;
+	let target_org_position = node_b.data().extra.pos;
+	console.log(source_org_position);
+	console.log(target_org_position);
+	let source_org_parent = node_a.parent().id();
+	let target_org_parent = node_b.parent().id();
+	console.log(source_org_parent);
+	console.log(target_org_parent);
+	node_a.data().extra.pos = target_org_position;
+	node_b.data().extra.pos = source_org_position;
+	node_a.move({ parent: target_org_parent });
+	node_b.move({ parent: source_org_parent });
+	let i = source_org_position.row;
+	let j = target_org_position.row;
 	swapRows(settings.A, settings.B, i, j);
 	settings.transition = updateTransitionMatrix(i, j);
 	generateEdgesFromTransitionMatrix();
-
-	//matrixToInput(settings.A, $("#matrix-table-a"));
-	//matrixToInput(settings.B, $("#matrix-table-b"));
-	//matrixToInput(settings.transition, $("#matrix-table-transition"));
-
-	cy.edges('#' + edge.source().id() + "__" + edge.target().id()).addClass("changed");
-	cy.edges('#' + edge.target().id() + "__" + edge.source().id()).addClass("changed");
 	if (!show_directed) {
 		cy.$(".directed").hide();
 	}
 	if (!show_undirected) {
 		cy.$(".undirected").hide();
 	}
+	cy.edges('#' + a + "_b_" + b).addClass("changed");
+	cy.edges('#' + b + "_b_" + a).addClass("changed");
 	cy.layout({ name: 'grid', position: bipartite, rows: settings.dim, cols: 2, fit: true, ready: function () { } });
 	updateTransitionAndInverseInputs();
 }
@@ -460,6 +523,30 @@ function updateTransitionAndInverseInputs() {
 	matrixToInput(settings.transition, $("#matrix-table-transition"));
 	matrixToInput(math.Inv(settings.transition, settings.base), $("#matrix-table-transition-inverse"));
 }
+
+function goPrev() {
+	if (settings.history.prev.length) {
+		var move = settings.history.prev.pop();
+		settings.history.next.push(move);
+		swapNodes(move.b, move.a);
+		enableNextPrev();
+	}
+}
+
+function goNext() {
+	if (settings.history.next.length) {
+		var move = settings.history.next.pop();
+		settings.history.prev.push(move);
+		swapNodes(move.a, move.b);
+		enableNextPrev();
+	}
+}
+
+function enableNextPrev() {
+	$("#prev-btn").attr("disabled",settings.history.prev.length == 0);
+	$("#next-btn").attr("disabled",settings.history.next.length == 0);
+}
+
 function updateTransitionMatrix(i, j) {
 	var B = math.transpose(settings.transition);
 

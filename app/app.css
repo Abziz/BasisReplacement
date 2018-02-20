@@ -60,3 +60,8 @@ input.mat-input {
 .mat-input:disabled {
 	background-color: #FFF
 }
+.trim {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}

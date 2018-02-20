@@ -187,7 +187,7 @@
 											title="Show/Hide matrix">
 										Current Transition Matrix
 									</button>
-									<button class="btn btn-dark back"
+									<button id="prev-btn" class="btn btn-dark back"
 											data-toggle="tooltip"
 											title="undo one step"
 											disabled>
@@ -198,7 +198,7 @@
 											title="Save matrix">
 										<i class="fa fa-save"></i>
 									</button>
-									<button class="btn btn-dark back"
+									<button id="next-btn" class="btn btn-dark back"
 											data-toggle="tooltip"
 											title="redo one step"
 											disabled>
@@ -240,6 +240,24 @@
 
 		</div>
 		<!-- /#page-content-wrapper -->
+		<div id="item-template" style="display:none">
+			<div class="list-group-item bg-light d-flex p-2">
+				<div class="w-100 d-flex align-self-center">
+					<span class="w-100 trim pr-1 item-name"></span>
+					<span class="w-25 item-base"></span>
+					<span class="w-25 item-dim"></span>
+				</div>
+				<div class="btn-group">
+					<button class="btn btn-primary item-load">
+						<i class="fa fa-fw fa-folder-open"></i>
+					</button>
+					<button class="btn btn-danger item-delete">
+						<i class="fa fa-fw fa-trash"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+
 		<div class="modal fade" id="load-matrix-modal">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -250,7 +268,9 @@
 						</button>
 					</div>
 					<div class="modal-body">
+						<div id="matrix-list" class="list-group">
 
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
