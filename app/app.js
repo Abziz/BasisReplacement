@@ -105,7 +105,7 @@ function listSavedMatrices(data) {
 	$.each(data.val(), function (i, v) {
 		let clone = $("#item-template>div").clone();
 		let name = v.name || "לא נבחר שם";
-		let base = v.base || "Real"
+		let base = v.base || "R"
 		$(".item-name", clone).text(name);
 		$(".item-dim", clone).text("dim: " + v.dim);
 		$(".item-base", clone).text("base: " +base);
